@@ -160,4 +160,30 @@ IQR(usedcars$price)
 
 quantile(usedcars$price)
 
+#Probabilidades
+
+quantile(usedcars$price, probs = c(0.01, 0.99))
+
+#secuencias
+
+quantile(usedcars$price, seq(from = 0, to = 1, by = 0.20))
+
+#creando un boxplot
+
+boxplot(usedcars$price, main = "Boxplot of Used Car Prices", ylab = "odometer (mi.)")
+boxplot(usedcars$mileage, main = "Boxplot of Used Car Mileage", ylab = "Odometer (mi.)")
+
+
+# Histograma
+
+hist(usedcars$price, main = "Histograma", xlab = "Price ($)")
+hist(usedcars$mileage, main = "Histogram", xlab = "Odometer (mi.)")
+
+#table salida produce una secuencia de un vector o factor
+
+table(usedcars$year)
+
+table(usedcars$model)
+
+table(usedcars$color)
 
