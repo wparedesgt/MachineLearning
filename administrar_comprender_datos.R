@@ -187,3 +187,13 @@ table(usedcars$model)
 
 table(usedcars$color)
 
+#generar proporciones
+
+model_table <- table(usedcars$model)
+prop.table(model_table)
+
+#Creando porcentajes
+
+color_pct <- table(usedcars$color)
+color_pct <- prop.table(color_pct) * 100
+round(color_pct, digits = 1)
