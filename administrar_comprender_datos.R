@@ -197,3 +197,12 @@ prop.table(model_table)
 color_pct <- table(usedcars$color)
 color_pct <- prop.table(color_pct) * 100
 round(color_pct, digits = 1)
+
+#scatterplot millas vrs precio
+
+plot(x = usedcars$mileage, y = usedcars$price, main = "Scatterplot", 
+     xlab = "Used Car Odometer mi.", ylab = "Used Car Price ($)")
+
+
+
+
