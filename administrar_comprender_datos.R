@@ -203,6 +203,15 @@ round(color_pct, digits = 1)
 plot(x = usedcars$mileage, y = usedcars$price, main = "Scatterplot", 
      xlab = "Used Car Odometer mi.", ylab = "Used Car Price ($)")
 
+#install library gmodels
 
+library(gmodels)
+
+usedcars$conservative <- usedcars$color %in% c("Black", "Gray", "Silver", "White")
+
+table(usedcars$conservative)
+
+
+CrossTable(x = usedcars$model, y = usedcars$conservative)
 
 
