@@ -41,4 +41,14 @@ normalize(c(10, 20, 30, 40, 50))
 
 library(purrr)
 
-rnorm(c(1,2,3,4,5))
+
+#Normalizando la columna
+
+wbcd_n <- as.data.frame(lapply(wbcd[2:31], normalize))
+
+
+#Validando la informacion
+
+summary(wbcd_n$area_mean)
+
+
