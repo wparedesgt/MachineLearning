@@ -55,5 +55,24 @@ as.character(sms_corpus[[1]])
 as.character(sms_corpus_clean[[1]])
 
 
+#Quitando los numeros de los mensajes
 
+sms_corpus_clean <- tm_map(sms_corpus_clean, removeNumbers)
 
+#quitar las palabras to, and, but ya que estas no sirven para el machine learning.
+
+#usaremos la funcion stopwords
+
+sms_corpus_clean <- tm_map(sms_corpus_clean, removeWords, stopwords())
+
+as.character(sms_corpus[[1]])
+as.character(sms_corpus_clean[[1]])
+
+#Ahora quitamos las puntuaciones 
+
+sms_corpus_clean <- tm_map(sms_corpus_clean, removePunctuation)
+
+#Revisamos nuevamente
+
+as.character(sms_corpus[[1]])
+as.character(sms_corpus_clean[[1]])
