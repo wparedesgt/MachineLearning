@@ -76,3 +76,43 @@ sms_corpus_clean <- tm_map(sms_corpus_clean, removePunctuation)
 
 as.character(sms_corpus[[1]])
 as.character(sms_corpus_clean[[1]])
+
+
+#Utilizando la libreria snowballc para usar la funcion wordstream que retorna palabras en presente perfecto.
+
+library(SnowballC)
+
+#Creando un ejemplo para comprension de la funcion
+
+wordStem(c("learn", "learned", "learning", "learns"))
+
+
+#Aplicando la funcion al ejercicio pero primero el stemDocument
+
+sms_corpus_clean <- tm_map(sms_corpus_clean, stemDocument)
+
+#Después de eliminar números, palabras de parada y puntuación, así como realizar
+#De raíz, los mensajes de texto se dejan con los espacios en blanco que anteriormente se separaron.
+#Las piezas que ahora faltan. El último paso en nuestro proceso de limpieza de texto es eliminar
+#espacios en blanco adicionales, utilizando la transformación incorporada de stripWhitespace ():
+
+sms_corpus_clean <- tm_map(sms_corpus_clean, stripWhitespace)
+
+#Revisando las primeras tres lineas
+
+as.character(sms_corpus_clean[[1]])
+
+
+#Como puede suponer, el paquete tm proporciona funcionalidad para tokenizar el SMS
+#corpus mensaje. La función DocumentTermMatrix () tomará un corpus y creará
+#una estructura de datos denominada Matriz de Término del Documento (DTM) en la que las filas indican
+#Los documentos (mensajes SMS) y las columnas indican términos (palabras).
+
+sms_dtm <- DocumentTermMatrix(sms_corpus_clean)
+
+
+#Por otro lado, si no hubiéramos realizado el preprocesamiento, podríamos hacerlo.
+#aquí, proporcionando una lista de opciones de parámetros de control para anular los valores predeterminados.
+#Por ejemplo, para crear un DTM directamente desde el corpus SMS sin procesar, sin procesar,
+#Podemos usar el siguiente comando:
+
