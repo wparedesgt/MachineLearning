@@ -1,4 +1,5 @@
 #Packete carret, entrenamiento y pruebas, y precisión general
+library(tidyverse)
 
 #En este curso, usaremos el paquete caret, que tiene varias funciones útiles para construir y evaluar métodos de aprendizaje automático.
 
@@ -29,6 +30,9 @@ data("heights")
 
 #Entonces y es sexo y x es altura.
 
+y <- heights$sex
+x <- heights$height
+
 #Este es claramente un resultado categórico, ya que y puede ser masculino o femenino, y solo tenemos un predictor, la altura.
 
 #Sabemos que no podremos predecir y con mucha precisión en función de x porque las alturas de hombres y mujeres no son tan diferentes en relación con la variabilidad dentro del grupo, pero ¿podemos hacerlo mejor que adivinar?
@@ -51,13 +55,20 @@ data("heights")
 
 #El paquete caret incluye la función createDataPartition que nos ayuda a generar índices para dividir aleatoriamente los datos en conjuntos de entrenamiento y pruebas.
 
-#Los tiempos de argumento en funciones se utilizan para definir cuántas muestras aleatorias de índices se devolverán.
+#El argumento times en funciones se utilizan para definir cuántas muestras aleatorias de índices se devolverán.
 
-#El argumento p se usa para definir qué proporción del índice representado y la lista de argumentos se usa para decidir si desea que los índices se devuelvan como una lista o no.
+#El argumento "p" se usa para definir qué proporción del índice representado y el argumento "list"  se usa para decidir si desea que los índices se devuelvan como una lista o no.
 
 #Aquí lo vamos a utilizar así.
 
+set.seed(2)
+test_index <- createDataPartition(y, times = 1, p = 0.5, list = FALSE)
+
+
 #Podemos usar este índice para definir el conjunto de entrenamiento y el conjunto de prueba como este.
+
+train_set <- heights[-test_index,]
+test_set <- heights[test_index,]
 
 #Ahora desarrollaremos un algoritmo utilizando solo el conjunto de entrenamiento.
 
@@ -73,6 +84,9 @@ data("heights")
 
 #Podemos hacer eso usando la función de ejemplo como esta.
 
+y_hat <- sample(c("Male", "Female"),
+                length(test_index), replace = TRUE)
+
 #Tenga en cuenta que estamos ignorando completamente el predictor y simplemente adivinando el sexo.
 
 #OK, sigamos adelante.
@@ -83,9 +97,15 @@ data("heights")
 
 #Así que podemos hacer eso así.
 
+y_hat <- sample(c("Male", "Female"),
+                length(test_index), replace = TRUE) %>% 
+  factor(levels(test_set$sex))
+
 #La precisión general se define simplemente como la proporción general que se predice correctamente.
 
 #Podemos calcular eso usando esta simple línea de código.
+
+mean(y_hat == test_set$sex)
 
 #No es sorprendente que nuestra precisión sea aproximadamente del 50% que estamos adivinando.
 
@@ -95,6 +115,9 @@ data("heights")
 
 #Puedes verlo escribiendo este código.
 
+heights %>% group_by(sex) %>%
+  summarize(mean(height), sd(height))
+
 #¿Pero cómo hacemos uso de esta visión?
   
 #Probemos un enfoque simple.
@@ -103,7 +126,12 @@ data("heights")
 
 #Podemos hacer eso usando este código muy simple.
 
+y_hat <- ifelse(x > 62, "Male", "Female") %>% 
+  factor(levels = levels(test_set$sex))
+
 #La precisión aumenta de 50% a 80%, lo que podemos ver al escribir esta línea, pero ¿podemos hacerlo mejor?
+
+mean(y == y_hat)
   
 #En el ejemplo anterior, usamos el corte de 62 pulgadas, pero podemos examinar la precisión obtenida para otros cortes y luego tomar el valor que proporciona el mejor resultado.
 
@@ -121,18 +149,74 @@ data("heights")
 
 #Podemos hacer eso con esta simple pieza de código.
 
+cutoff <- seq(61,70)
+accuracy <- map_dbl(cutoff, function(x) {
+  y_hat <- ifelse(train_set$height > x, "Male", "Female") %>% 
+    factor(levels = levels(test_set$sex))
+  mean(y_hat == train_set$sex)
+} )
+
+
 #Podemos hacer un gráfico que muestre la precisión en el conjunto de entrenamiento para hombres y mujeres.
 
 #Aquí está.
+train_set %>% ggplot(aes(cutoff, accuracy)) + geom_point()
 
 #Vemos que el valor máximo es un 83.6%.
 
+max(accuracy)
+
 #Mucho más alto que el 50%, y se maximiza con el corte de 64 pulgadas.
 
+best_cutoff <- cutoff[which.max(accuracy)]
+
+best_cutoff
+
 #Ahora, podemos probar este corte en nuestro conjunto de pruebas para asegurarnos de que la precisión no sea demasiado optimista.
+
+y_hat <- ifelse(test_set$height > best_cutoff, "Male", "Female") %>% 
+  factor(levels = levels(test_set$sex)) 
+
+y_hat <- factor(y_hat)
+
+mean(y_hat == test_set$sex)
 
 #Ahora, obtenemos una precisión del 81.7%.
 
 #Vemos que es un poco menor que la precisión observada en el conjunto de entrenamiento, pero aún así es mejor que adivinar.
 
 #Y al realizar pruebas en un dato en el que no entrenamos, sabemos que no se debe a un ajuste excesivo.
+
+#Ejercicio
+
+library(dslabs)
+library(tidyverse)
+library(caret)
+
+
+mnist <- read_mnist()
+str(mnist)
+
+#How many features are available to us for prediction in the mnist digits dataset?
+
+#respuesta 784 
+
+#A list with four items: Xtrain is a training set matrix with 6000 rows (samples) and 784 columns (features)
+
+#https://www.rdocumentation.org/packages/rerf/versions/1.1.3/topics/mnist
+
+
+y <- mnist$train$labels
+
+y[5] + y[6]
+
+y[5] > y[6]
+
+y %>% head(20)
+
+#Son validas por la sumatoria
+
+
+
+
+

@@ -42,7 +42,9 @@
 
 #Así que queremos que la predicción y el sombrero coincidan con el resultado real.
 
-#El resultado y puede ser categórico qué dígito, palabra, correo no deseado o no correo no deseado, peatón o camino vacío por delante; o continua: clasificación de la película, precio de la vivienda, valor de stock, distancia entre el automóvil sin conductor y el peatón.
+#El resultado y puede ser "CATEGORICO" qué dígito, palabra, correo no deseado o no correo no deseado, peatón o camino vacío por delante; o 
+
+#"CONTINUO": clasificación de la película, precio de la vivienda, valor de stock, distancia entre el automóvil sin conductor y el peatón.
 
 #El concepto y los algoritmos que aprendemos aquí se aplican a ambos.
 
@@ -69,3 +71,4 @@
 #Aquí, evitamos el uso de la regresión para evitar la confusión con nuestro uso anterior del término regresión lineal.
 
 #Nuevamente, en la mayoría de los casos, será claro si nuestros resultados son categóricos o continuos, por lo que evitaremos usar estos términos cuando sea posible.
+
