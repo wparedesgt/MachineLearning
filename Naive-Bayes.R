@@ -116,3 +116,53 @@ sms_dtm <- DocumentTermMatrix(sms_corpus_clean)
 #Por ejemplo, para crear un DTM directamente desde el corpus SMS sin procesar, sin procesar,
 #Podemos usar el siguiente comando:
 
+sms_dtm2 <- DocumentTermMatrix(sms_corpus, control = list(tolower = TRUE, removeNumbers = TRUE,
+                                                          stopwords = TRUE,
+                                                          removePunctuation = TRUE,
+                                                          stemming = TRUE))
+
+
+#Esto aplica los mismos pasos de preprocesamiento al corpus de SMS en el mismo orden que
+#hecho antes Sin embargo, al comparar sms_dtm con sms_dtm2, vemos una ligera diferencia
+#en el número de términos en la matriz:
+
+sms_dtm
+sms_dtm2
+
+
+#El motivo de esta discrepancia tiene que ver con una diferencia menor en el ordenamiento de
+#Los pasos de preprocesamiento. La función DocumentTermMatrix () aplica su limpieza
+#funciona en las cadenas de texto solo después de que se hayan dividido en palabras. Así,
+#Utiliza una función de eliminación de palabras de parada ligeramente diferente. En consecuencia, 
+#algunas palabras se dividen de forma diferente a cuando se limpian antes de la tokenización.
+
+#Dividiremos los datos en dos partes: 75 por ciento para entrenamiento y 25 por ciento para
+#pruebas. Dado que los mensajes SMS están ordenados al azar, simplemente podemos tomar 
+#los primeros 4,169 para entrenamiento y dejar los 1,390 restantes para probar. 
+#Afortunadamente, el objeto DTM se parece mucho a un marco de datos y se puede dividir 
+#utilizando las operaciones estándar [row, col]. Como nuestro DTM almacena los mensajes 
+#SMS como filas y las palabras como columnas, debemos solicitar un rango específico de 
+#filas y todas las columnas para cada una:
+
+sms_dtm_train <- sms_dtm[1:4169, ]
+sms_dtm_test <- sms_dtm[4170:5559, ]
+
+#Para mayor comodidad, también es útil guardar un par de vectores con etiquetas para
+#Cada una de las filas en las matrices de entrenamiento y prueba. Estas etiquetas no se almacenan en
+#el DTM, por lo que tendríamos que extraerlos del marco de datos sms_raw original:
+
+
+sms_train_labels <- sms_raw[1:4169, ]$type
+
+sms_test_labels <- sms_raw[4170:5559, ]$type
+
+#Para confirmar que los subconjuntos son representativos del conjunto completo de datos SMS, vamos a
+#Comparar la proporción de spam en los marcos de datos de prueba y entrenamiento:
+
+
+prop.table(table(sms_test_labels))
+
+prop.table(table(sms_train_labels))
+
+
+#Ambos contienen el 13% de Spam
