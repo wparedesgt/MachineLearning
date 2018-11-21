@@ -41,6 +41,30 @@ dat %>% group_by(type) %>% summarize(prop_female = mean(sex == "Female"))
 #Si utilizara la variable type para predecir el sexo, ¿cuál sería la precisión de la predicción?
 
 
+library(caret)
+
+test_index <- createDataPartition(y, times = 1, p = 0.5, list = FALSE)
+
+train_set <- dat[-test_index,]
+test_set <- dat[test_index,]
+
+y_hat <- sample(c("Male", "Female"), 
+                length(test_index), replace = TRUE) %>% factor(levels = c("Male", "Female"))
+
+mean(y_hat == test_set$sex)
+mean(y_hat == train_set$sex)
+
+table(y_hat)
+
+#Primera Presicion 
+
+y_hat <- ifelse(x == "online,", "Male", "Female") %>%   factor(levels = c("Male", "Female"))
+
+
+mean(y_hat == test_set$sex)
+mean(y_hat == train_set$sex)
+
+#if x==online
 
 
 
