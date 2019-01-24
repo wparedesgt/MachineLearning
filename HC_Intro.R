@@ -28,7 +28,6 @@
 
 #Esto es por conveniencia matemática, algo que demostraremos más adelante.
 
-#DE ACUERDO.
 
 #La configuración general es la siguiente.
 
