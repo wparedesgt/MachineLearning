@@ -51,3 +51,15 @@ table(predicted = y_hat, actual = y)
 
 
 #¿Cuál es la sensibilidad de esta predicción?
+
+confusionMatrix(data = y_hat, reference = y)
+
+
+#Practicaremos la construcción de un algoritmo de aprendizaje automático utilizando un nuevo conjunto de datos, iris, que proporcione múltiples predictores para que podamos usar para entrenar. Para comenzar, eliminaremos las especies de setosa y nos enfocaremos en las especies de iris versicolor y virginica usando el siguiente código:
+
+library(caret)
+data(iris)
+iris <- iris[-which(iris$Species=='setosa'),]
+y <- iris$Species
+
+
