@@ -56,7 +56,7 @@ mean(y_hat == test_set$sex)
 
 #Para ver esto, comenzaremos por construir lo que se conoce como la matriz de confusión, que básicamente tabula cada combinación de predicción y valor real.
 
-#Podemos hacer esto en R usando la tabla de funciones, así.
+#Podemos hacer esto en R usando la funcion table(), así.
 
 table(predicted = y_hat, actual = test_set$sex)
 

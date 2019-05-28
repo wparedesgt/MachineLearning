@@ -160,7 +160,7 @@ accuracy <- map_dbl(cutoff, function(x) {
 #Podemos hacer un gráfico que muestre la precisión en el conjunto de entrenamiento para hombres y mujeres.
 
 #Aquí está.
-train_set %>% ggplot(aes(cutoff, accuracy)) + geom_point()
+train_set %>% ggplot(aes(accuracy, cutoff)) + geom_point()
 
 #Vemos que el valor máximo es un 83.6%.
 

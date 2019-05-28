@@ -59,6 +59,8 @@ mean(y_hat == test_set$sex)
 
 cutoffs <- c(50, seq(60,75),80)
 
+cutoffs
+
 height_cutoff <- map_df(cutoffs, function(x){
   y_hat <- ifelse(test_set$height > x, "Male", "Female") %>% 
     factor(levels = c("Female", "Male"))
