@@ -45,3 +45,15 @@
 #Para aprender los conceptos básicos, comenzaremos con ejemplos muy simples con un solo predictor, luego pasaremos a dos predictores.
 
 #Y una vez que aprendamos esto, atacaremos más desafíos de aprendizaje automático del mundo real.
+
+
+#Puntos clave
+#Yi = un resultado para la observación o el índice i.
+
+#Utilizamos negrita para X_i para distinguir el vector de predictores de los predictores individuales Xi, 1, ..., Xi, 784.
+
+#Al referirnos a un conjunto arbitrario de características y resultados, descartamos el índice i y utilizamos Y y negrita X.
+
+#Las mayúsculas se utilizan para referirse a variables porque pensamos que los predictores son variables aleatorias.
+
+#Se usa minúscula para denotar los valores observados. Por ejemplo, X = x.

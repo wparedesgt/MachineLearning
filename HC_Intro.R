@@ -71,3 +71,10 @@
 
 #Nuevamente, en la mayoría de los casos, será claro si nuestros resultados son categóricos o continuos, por lo que evitaremos usar estos términos cuando sea posible.
 
+
+#Puntos Clave
+
+
+#X1, ..., Xp denota las características, Y denota los resultados e Y ^ denota las predicciones.
+
+#Las tareas de predicción de aprendizaje automático se pueden dividir en resultados categóricos y continuos. Nos referimos a estos como clasificación y predicción, respectivamente.

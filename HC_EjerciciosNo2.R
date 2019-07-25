@@ -60,7 +60,6 @@ y_hat <- sample(c('virginica', 'versicolor'),
 
 #La precisión general se define simplemente como la proporción general que se predice correctamente sin smart cutoff.
 
-#Podemos calcular eso usando esta simple línea de código.
 
 mean(y_hat == test$Species)
 
