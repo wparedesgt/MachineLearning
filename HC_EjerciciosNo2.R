@@ -20,6 +20,9 @@ names(iris)
 set.seed(2)
 
 
+test <- iris[test_index,]
+train <- iris[-test_index,]
+
 #Cree el test_index
 
 test_index <- createDataPartition(y, times = 1, p = 0.5, list = FALSE)
@@ -58,6 +61,8 @@ y_hat <- sample(c('virginica', 'versicolor'),
   factor(levels(test$Species))
 
 
+
+
 #La precisión general se define simplemente como la proporción general que se predice correctamente sin smart cutoff.
 
 
@@ -76,7 +81,7 @@ accuracy <- map_dbl(cutoff, function(x) {
   mean(y_hat == train$Species)
 } )
 
-max(accuracy)
+max(accuracy) #Respuesta Correcta
 
 best_cutoff <- cutoff[which.max(accuracy)]
 
