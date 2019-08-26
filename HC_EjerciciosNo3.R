@@ -87,3 +87,43 @@ heights %>%
   summarize(p = mean(sex == "Male")) %>% qplot(height, p, data =.)
 
 
+#Q7
+
+#En la gráfica que acabamos de hacer en Q1 vemos una gran variabilidad para valores bajos de altura. Esto se debe a que tenemos pocos puntos de datos. Esta vez use el cuantil 0.1,0.2,…, 0.9 y la función de corte para asegurar que cada grupo tenga el mismo número de puntos. Tenga en cuenta que para cualquier vector numérico x, puede crear grupos basados en cuantiles como este: cut (x, quantile (x, seq (0, 1, 0.1)), include.lowest = TRUE).
+
+#Parte del código se proporciona aquí:
+
+
+ps <- seq(0, 1, 0.1)
+heights %>% 
+  mutate(g = cut(height, quantile(height, ps), include.lowest = TRUE)) %>%
+group_by(g) %>%
+  summarize(p = mean(sex == "Male"), height = mean(height)) %>%
+  qplot(height, p, data =.)
+
+
+
+#Q8
+
+#Puede generar datos a partir de una distribución normal bivariada utilizando el paquete MASS utilizando el siguiente código.
+
+Sigma <- 9*matrix(c(1,0.5,0.5,1), 2, 2)
+dat <- MASS::mvrnorm(n = 10000, c(69, 69), Sigma) %>%
+  data.frame() %>% setNames(c("x", "y"))
+
+
+#Y haga un plot rapido usando plot (dat).
+
+#Usando un enfoque similar al utilizado en el ejercicio anterior, calculemos las expectativas condicionales y hagamos un diagrama. Se le ha proporcionado parte del código:
+
+Sigma
+dat
+
+ps <- seq(0, 1, 0.1)
+dat %>% 
+  mutate(g = cut(x, quantile(x, ps), include.lowest = TRUE)) %>%
+  group_by(g) %>%
+  summarize(y = mean(y), x = mean(x)) %>%
+qplot(x, y, data =.)
+
+
