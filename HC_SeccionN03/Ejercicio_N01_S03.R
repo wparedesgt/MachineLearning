@@ -164,10 +164,6 @@ cor(dat)
 #Establezca la semilla en 1, luego use el paquete caret para dividir en un conjunto de prueba y entrenamiento del mismo tamaño. Compare el RMSE cuando use solo x_1, solo x_2 y ambos x_1 y x_2. Entrena un modelo lineal para cada uno.
 
 
-#Ejercicio No. 7
-
-#¿Cuál de los tres modelos funciona mejor (tiene el RMSE más bajo)?
-
 set.seed(1)
 
 rmse <- replicate(100, {
@@ -185,6 +181,15 @@ mean(rmse)
 sd(rmse)
 
 
+#¿Cuál de los tres modelos funciona mejor (tiene el RMSE más bajo)?
+
+
+#Ejercicio No. 07
+
+#Informe el RMSE más bajo de los tres modelos probados en Q6.
+
+#0.307
+
 #Ejercicio No. 08
 
 #Repita el ejercicio de Q6 pero ahora cree un ejemplo en el que x_1 y x_2 estén altamente correlacionadas.
@@ -194,4 +199,23 @@ set.seed(1)
 Sigma <- matrix(c(1.0, 0.75, 0.75, 0.75, 1.0, 0.95, 0.75, 0.95, 1.0), 3, 3)
 dat <- MASS::mvrnorm(n = 100, c(0, 0, 0), Sigma) %>%
   data.frame() %>% setNames(c("y", "x_1", "x_2"))
+
+
+
+set.seed(1)
+
+rmse <- replicate(100, {
+  test_index <- createDataPartition(dat$y, times = 1, p = 0.5, list = FALSE)
+  train_set <- dat %>% slice(-test_index)
+  test_set <- dat %>% slice(test_index)
+  fit <- lm(y ~ (x_1 + x_2), data = train_set)
+  y_hat <- predict(fit, test_set)
+  sqrt(mean((y_hat-test_set$y)^2))
+})
+
+
+
+mean(rmse)
+sd(rmse)
+
 
