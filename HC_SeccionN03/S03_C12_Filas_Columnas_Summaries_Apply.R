@@ -1,10 +1,6 @@
 #S03_C12_Columnas_Filas_Summaries_Apply
 #Resumenes de filas y columnas aplicadas
 
-avgs <- apply(x, 1, mean)
-
-sds <- apply(x, 2, sd)
-
 #Así que ahora comencemos a atacar los desafíos que planteamos anteriormente.
 
 #Para el primero relacionado con la oscuridad total de píxeles, queremos sumar los valores de cada fila y luego visualizar cómo estos valores varían según el dígito.
@@ -36,7 +32,7 @@ data_frame(labels = as.factor(y), row_averages = avg) %>%
 
 #El paquete matrixStats agrega funciones que realizan operaciones en cada fila o columna de manera muy eficiente, incluidas las funciones rowSds y colSds.
 
-#Tenga en cuenta que las funciones que acabamos de describir están realizando una operación similar a dos funciones que ya hemos aprendido, sapply() y map() por función.
+#Tenga en cuenta que las funciones que acabamos de describir están realizando una operación similar a dos funciones que ya hemos aprendido, sapply() y map() de la libreria purr.
 
 #Aplican la misma función a una parte de nuestro objeto.
 
@@ -44,16 +40,21 @@ data_frame(labels = as.factor(y), row_averages = avg) %>%
 
 #La función de aplicación le permite aplicar cualquier función, no solo suma o media, a una matriz.
 
-#El primer argumento de la función de aplicación es la matriz.
+#El primer argumento de la función de apply() es la matriz.
 
-La segunda es la dimensión a la que desea aplicar la función, una para filas, dos para columnas.
+#La segunda es la dimensión a la que desea aplicar la función, 1 para filas, 2 para columnas.
 
-Y el tercer argumento es la función.
+#Y el tercer argumento es la función.
 
-Entonces, por ejemplo, rowMeans se puede escribir así.
+#Entonces, por ejemplo, rowMeans se puede escribir así.
 
-Pero tenga en cuenta que al igual que sapply y map, podemos realizar cualquier función.
+avgs <- apply(x, 1, mean)
 
-Entonces, si quisiéramos la desviación estándar para cada columna, podríamos escribir esto.
+#Pero tenga en cuenta que al igual que sapply() y map(), podemos realizar cualquier función.
 
-Ahora, lo que paga con esta flexibilidad es que no son tan rápidas como las funciones dedicadas como rowMeans, colMeans, etc.
+#Entonces, si quisiéramos la desviación estándar para cada columna, podríamos escribir esto.
+
+sds <- apply(x, 2, sd)
+
+#Ahora, lo que paga con esta flexibilidad es que no son tan rápidas como las funciones dedicadas como rowMeans, colMeans, etc.
+
