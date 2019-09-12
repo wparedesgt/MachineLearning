@@ -45,6 +45,8 @@ t(t(x) - colMeans(x))
 #take each entry of a vector and subtracts it from the corresponding row or column
 x_mean_0 <- sweep(x, 2, colMeans(x))
 
+head(x_mean_0)
+
 #Hay dos allí.
 
 #Eso te dice que es una columna.
