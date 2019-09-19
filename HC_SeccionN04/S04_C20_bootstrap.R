@@ -109,3 +109,4 @@ median(X) + 1.96 * sd(X) / sqrt(N) * c(-1, 1)
 
 mean(M) + 1.96 * sd(M) * c(-1,1)
 mean(M_star) + 1.96 * sd(M_star) * c(-1, 1)
+
