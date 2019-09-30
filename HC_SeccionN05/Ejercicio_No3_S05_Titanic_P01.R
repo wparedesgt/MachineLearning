@@ -120,5 +120,63 @@ train_set %>%
 #¿Cuál es la (accuracy) precisión de este método de predicción basado en el sexo en el conjunto de prueba?
 
 
+pred <- test_set$Sex == "female"
+mean(pred == (test_set$Survived == "1"))
+
+#Respuesta de consulta
+
+sex_model <- ifelse(test_set$Sex == "female", 1, 0)    # predict Survived=1 if female, 0 if male
+mean(sex_model == test_set$Survived)    # calculate accuracy
 
 
+#¿En qué clase (es) (Pclass) fueron los pasajeros más propensos a sobrevivir que morir?
+
+train_set %>%
+  group_by(Pclass) %>%
+  summarize(Survived = mean(Survived == 1)) 
+  #filter(Sex == "female") %>%
+  #pull(Survived)
+
+          
+#Predecir la supervivencia utilizando la clase de pasajero en el conjunto de prueba: predecir la supervivencia si la tasa de supervivencia para una clase es superior a 0,5; de lo contrario, predecir la muerte
+
+#¿Cuál es la precisión de este método de predicción basado en clases en el conjunto de prueba?
+
+head(test_set)
+
+
+class_model <- ifelse(test_set$Pclass == 1, 1, 0)    # predict Survived=1 if female, 0 if male
+mean(pred_class == test_set$Survived)    # calculate accuracy
+
+
+#Agrupe a los pasajeros por sexo y clase de pasajero.
+#¿Qué combinaciones de sexo y clase tenían más probabilidades de sobrevivir que morir?
+
+train_set %>%
+  group_by(Sex, Pclass) %>% 
+  summarize(Survived = mean(Survived == 1)) 
+
+
+#Predecir la supervivencia utilizando el sexo y la clase de pasajero en el conjunto de prueba. Predecir la supervivencia si la tasa de supervivencia para una combinación de sexo / clase es superior a 0,5; de lo contrario, predecir la muerte.
+
+#¿Cuál es la precisión de este método de predicción basado en el sexo y la clase en el conjunto de prueba?
+
+
+
+sex_class_model <- ifelse(test_set$Sex == "female" & test_set$Pclass <= 2, 1, 0)    # predict Survived=1 if female, 0 if male
+
+mean(pred_sex_class == test_set$Survived)    # calculate accuracy
+
+
+#Use la función confusionMatrix para crear matrices de confusión para el modelo sexual, el modelo de clase y el modelo combinado de sexo y clase. Deberá convertir las predicciones y el estado de supervivencia en factores para utilizar esta función.
+
+#¿Cuál es la clase "positiva" utilizada para calcular las métricas de la matriz de confusión?
+
+test_set$Survived <- factor(test_set$Survived)
+sex_model <- factor(sex_model)
+class_model <- factor(class_model)
+sex_class_model <- factor(sex_class_model)
+
+confusionMatrix(sex_model, reference = test_set$Survived)
+confusionMatrix(class_model, reference = test_set$Survived)
+confusionMatrix(sex_class_model, reference = test_set$Survived)
