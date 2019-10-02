@@ -24,7 +24,7 @@ m
 
 #Supongamos que no tenemos acceso a toda la población, pero queremos estimar la mediana, llamémosla M. Tomamos una muestra de 250 y estimamos la mediana de la población, M, con la muestra mediana grande M, como esta.
 
-set.seed(1995, sample.kind = "Rounding")
+set.seed(1995)
 
 N <- 250
 X <- sample(income, N)

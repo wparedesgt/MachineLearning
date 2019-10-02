@@ -30,7 +30,7 @@ head(polls_2008)
 
 #Para los propósitos de este ejemplo, no lo piense como un problema de pronóstico.
 
-#Simplemente estamos interesados en aprender la forma de la tendencia después de recopilar todos los datos.
+#Simplemente estamos interesados en aprender la forma de la tendencia después de recopilar todos los datos.
 
 #Suponemos que para cualquier día x, existe una verdadera preferencia entre el electorado, f de x, pero debido a la incertidumbre introducida por el sondeo, cada punto de datos viene con un error, épsilon.
 

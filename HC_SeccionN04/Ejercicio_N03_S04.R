@@ -6,7 +6,7 @@ library(tidyverse)
 library(caret)
 library(purrr)
 
-set.seed(1996, sample.kind="Rounding") 
+set.seed(1996) 
 n <- 1000
 p <- 10000
 x <- matrix(rnorm(n*p), n, p)
