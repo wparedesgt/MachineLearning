@@ -199,7 +199,8 @@ F_meas(data = sex_class_model, reference = factor(test_set$Survived))
 
 #¿Cuál es la precisión en el conjunto de prueba para el modelo LDA?
 
-set.seed(42)
+#set.seed(42)
+set.seed(42, sample.kind="Rounding")
 
 train_lda <- train(Survived ~ Fare, data = train_set, method = "lda")
 predict_lda <- predict(train_lda, test_set)
@@ -284,11 +285,15 @@ confusionMatrix(predict(train_knn, test_set), test_set$Survived)$overall["Accura
 
 set.seed(8)
 
-p <- 71
+xwp <- train_set
+colnames(xwp) <- paste("x", 1:ncol(xwp), sep = "_")
+ywp <- train_set$Survived
+
+x_subset <- xwp[ ,sample(7,7)]
+
+fit_knn <- train(x_subset, train_set$Survived, method = "knn", tuneGrid = data.frame(k = seq(101, 301, 25)))
 
 
-fit_knn <- train(x_subset, y, method = "knn", tuneGrid = data.frame(k = seq(101, 301, 25)))
-ggplot(fit)
 
 #Pregunta No. 11 Modelos de Clasificacion de Arbol
 

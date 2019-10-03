@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Thu Oct 03 16:59:04 CST 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-016d-93d9-249c-00001b7a8308 
+on database directory memory:/home/wparedes/Documentos/CienciaDatos/Mingob/MachineLearning/databaseName=metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@3a6c7249 
+Loaded from file:/home/wparedes/spark/spark-2.1.0-bin-hadoop2.7/jars/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_222-b10
+user.dir=/home/wparedes/Documentos/CienciaDatos/Mingob/MachineLearning
+os.name=Linux
+os.arch=amd64
+os.version=5.2.15-200.fc30.x86_64
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
