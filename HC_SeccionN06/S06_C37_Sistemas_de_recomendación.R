@@ -21,11 +21,20 @@
 
 #Puede seguir este enlace para ver el artículo de noticias.
 
+
+# https://bits.blogs.nytimes.com/2009/09/21/netflix-awards-1-million-prize-and-starts-a-new-contest/
+
+
 #Puede leer un buen resumen de cómo se creó el algoritmo ganador siguiendo este enlace.
+
+# http://blog.echen.me/2011/10/24/winning-the-netflix-prize-a-summary/
 
 #Lo incluiremos en el material de la clase.
 
 #Y una explicación más detallada siguiendo este enlace, también incluida en el material de la clase.
+
+# https://www.netflixprize.com/assets/GrandPrize2009_BPC_BellKor.pdf
+
 
 #Aquí le mostramos algunas de las estrategias de análisis de datos utilizadas por el equipo ganador.
 
@@ -37,11 +46,23 @@
 
 #Puedes subirlo así.
 
+library(tidyverse)
+library(dslabs)
+
+data("movielens")
+
 #Podemos ver que la tabla de lentes de película es ordenada y contiene miles de filas.
+
+head(movielens)
+names(movielens)
 
 #Cada fila representa una calificación dada por un usuario a una película.
 
 #Podemos ver la cantidad de usuarios únicos que proporcionan calificaciones y la cantidad de películas únicas que les proporcionaron utilizando este código.
+
+movielens %>% 
+  summarize(n_users = n_distinct(userId), 
+            n_movies = n_distinct(movieId))
 
 #Si multiplicamos esos dos números, obtenemos un número mucho mayor que 5 millones.
 
@@ -51,15 +72,39 @@
 
 #Así que podemos pensar en estos datos como una matriz muy grande con usuarios en las filas y películas en las columnas con muchas celdas vacías.
 
-#La función de recopilación nos permite convertir a este formato, pero si intentamos hacerlo para toda la matriz, se bloqueará R. Entonces, veamos un subconjunto más pequeño.
+#La función gater() nos permite convertir a este formato, pero si intentamos hacerlo para toda la matriz, se bloqueará R. Entonces, veamos un subconjunto más pequeño.
 
 #Esta tabla muestra un subconjunto muy pequeño de siete usuarios y cinco películas.
+
+keep <- movielens %>%
+  dplyr::count(movieId) %>%
+  top_n(5) %>%
+  pull(movieId)
+tab <- movielens %>%
+  filter(userId %in% c(13:20)) %>% 
+  filter(movieId %in% keep) %>% 
+  select(userId, title, rating) %>% 
+  spread(title, rating)
+tab %>% knitr::kable()
 
 #Puede ver las clasificaciones que cada usuario le dio a cada película y también puede ver las NA para las películas que no vieron o que no calificaron.
 
 #Puede pensar en la tarea de los sistemas de recomendación como completar los NA en la tabla que acabamos de mostrar.
 
 #Para ver cuán escasa es la matriz completa, aquí la matriz para una muestra aleatoria de 100 películas y 100 usuarios se muestra en amarillo, lo que indica una combinación de películas de usuario para la que tenemos una calificación.
+
+
+users <- sample(unique(movielens$userId), 100)
+rafalib::mypar()
+movielens %>% filter(userId %in% users) %>% 
+  select(userId, movieId, rating) %>%
+  mutate(rating = 1) %>%
+  spread(movieId, rating) %>% select(sample(ncol(.), 100)) %>% 
+  as.matrix() %>% t(.) %>%
+  image(1:100, 1:100,. , xlab="Movies", ylab="Users")
+
+abline(h=0:100+0.5, v=0:100+0.5, col = "grey")
+
 
 #Muy bien, así que sigamos adelante para tratar de hacer predicciones.
 
@@ -81,27 +126,58 @@
 
 #Aquí está la distribución.
 
+
+movielens %>% 
+  dplyr::count(movieId) %>% 
+  ggplot(aes(n)) + 
+  geom_histogram(bins = 30, color = "black") + 
+  scale_x_log10() + 
+  ggtitle("Movies")
+
+
 #Esto no debería sorprendernos dado que hay millones de éxitos de taquilla vistos por millones y películas artísticas independientes vistas solo por unos pocos.
 
 #Una segunda observación es que algunos usuarios son más activos que otros en la calificación de películas.
 
 #Tenga en cuenta que algunos usuarios han calificado más de 1,000 películas, mientras que otros solo han calificado un puñado.
 
+movielens %>% 
+  dplyr::count(userId) %>% 
+  ggplot(aes(n)) + 
+  geom_histogram(bins = 30, color = "black") + 
+  scale_x_log10() + 
+  ggtitle("Users")
+
+
 #Para ver cómo se trata de un desafío de aprendizaje automático, tenga en cuenta que necesitamos construir un algoritmo con los datos que hemos recopilado.
 
-#Y este algoritmo luego será utilizado por otros cuando los usuarios busquen recomendaciones de películas.
+#Y este algoritmo luego será utili
+RMSE <- function(true_ratings, predicted_ratings){
+  sqrt(mean((true_ratings - predicted_ratings)^2))
+  zado por otros cuando los usuarios busquen recomendaciones de películas.
 
 #Entonces, creemos un conjunto de pruebas para evaluar la precisión de los modelos que implementamos, al igual que en otros algoritmos de aprendizaje automático.
 
 #Usamos el paquete caret con este código.
 
+library(caret)
+set.seed(755)
+test_index <- createDataPartition(y = movielens$rating, times = 1,
+                                  p = 0.2, list = FALSE)
+train_set <- movielens[-test_index,]
+test_set <- movielens[test_index,]
+
+
 #Para asegurarnos de que no incluimos usuarios y películas en el conjunto de prueba que no aparecen en el conjunto de entrenamiento, los eliminamos utilizando la función semi_join, utilizando este código simple.
 
-#Todo está bien ahora.
+test_set <- test_set %>% 
+  semi_join(train_set, by = "movieId") %>%
+  semi_join(train_set, by = "userId")
+
 
 #Para comparar diferentes modelos o para ver qué tan bien lo estamos haciendo en comparación con alguna línea de base, necesitamos cuantificar lo que significa hacerlo bien.
 
-#Necesitamos una función de pérdida.
+#Necesitamos una función de pérdida (loss).
 
 #El desafío de Netflix utilizó el error típico y, por lo tanto, decidió un ganador basado en el error cuadrático medio residual en un conjunto de prueba.
 
@@ -118,5 +194,9 @@
 #Así que escribamos rápidamente una función que calcule este error cuadrático medio para un vector de calificaciones y sus predictores correspondientes.
 
 #Es una función simple que se ve así.
+
+RMSE <- function(true_ratings, predicted_ratings){
+  sqrt(mean((true_ratings - predicted_ratings)^2))
+}
 
 #Y ahora estamos listos para construir modelos y compararlos entre sí.
