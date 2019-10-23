@@ -51,6 +51,7 @@ y <- y[,-1]
 
 colnames(y) <- with(train_small, title[match(colnames(y), movieId)])
 
+head(y)
 
 #Los nombres de las columnas serán los nombres de las películas.
 
@@ -61,6 +62,7 @@ colnames(y) <- with(train_small, title[match(colnames(y), movieId)])
 y <- sweep(y, 1, rowMeans(y, na.rm = TRUE))
 y <- sweep(y, 2, colMeans(y, na.rm = TRUE))
 
+head(y)
 
 #Si el modelo que hemos estado utilizando describe todas las señales y las adicionales son solo ruido, entonces los residuos de las diferentes películas deberían ser independientes entre sí.
 

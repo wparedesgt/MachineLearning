@@ -125,3 +125,58 @@ abline(0,1)
 
 sum(s$d[1:3]^2) / sum(s$d^2)
 
+
+#Q7
+
+#Antes de continuar, vamos a mostrar un truco computacional útil para evitar crear la matriz diag(s$d). Para motivar esto, notamos que si escribimos U en sus columnas [U1, U2, ..., Up] entonces UD es igual a
+
+# UD = [U1d1, U2d2, ... , Updp,p]
+
+#Use la funcion sweep() para calcular UD sin contruir diag(s$d) o usar una multiplicacion de matriz.
+
+#Cual codigo es el correcto?
+
+identical(s$u %*% diag(s$d), sweep(s$u, 2, s$d, FUN = "*"))
+
+
+#Q8
+
+#Sabemos que U1d1,1, la primera columna de UD, tiene la mayor variabilidad de todas las columnas de UD. Anteriormente vimos una imagen de Y usando my_image (y), en la que vimos que la variabilidad de estudiante a estudiante es bastante grande y que los estudiantes que son buenos en una materia tienden a ser buenos en todos. Esto implica que el promedio (en todas las asignaturas) de cada alumno debería explicar en gran medida la variabilidad. Calcule el puntaje promedio de cada estudiante, compárelo con U1d1,1 y describa lo que encuentre.
+
+#Que observas
+
+plot(-s$u[,1]*s$d[1], rowMeans(y))
+
+#No hay relación entre el puntaje promedio de cada estudiante y U1d1,1.
+
+#Existe una relación linealmente decreciente entre el puntaje promedio de cada estudiante y U1d1,1.
+
+# Respuesta : #Hay una relación linealmente creciente entre el puntaje promedio de cada estudiante y U1d1,1.
+
+#Existe una relación exponencialmente creciente entre el puntaje promedio de cada estudiante y U1d1,1.
+
+#Existe una relación exponencialmente decreciente entre el puntaje promedio de cada estudiante y U1d1,1.
+
+
+#Q9
+
+#Notamos que los signos en SVD son arbitrarios porque:
+  
+#UDV⊤ = (- U) D (−V) ⊤
+  
+  
+#Con esto en mente, vemos que la primera columna de UD es casi idéntica a la puntuación promedio de cada estudiante, excepto por el signo.
+
+#Esto implica que multiplicar Y por la primera columna de V debe realizar una operación similar a tomar el promedio. Haga un diagrama de imagen de V y describa la primera columna en relación con otras y cómo se relaciona esto con tomar un promedio.
+
+#¿Cómo se relaciona la primera columna con las otras, y cómo se relaciona esto con tomar un promedio?
+
+my_image(s$v)
+
+#La primera columna es muy variable, lo que implica que la primera columna de YV es la suma de las filas de Y multiplicada por alguna función no constante y, por lo tanto, no es proporcional a un promedio.
+
+#La primera columna es muy variable, lo que implica que la primera columna de YV es la suma de las filas de Y multiplicada por alguna función no constante y, por lo tanto, es proporcional a un promedio.
+
+#Respuesta: #La primera columna está muy cerca de ser una constante, lo que implica que la primera columna de YV es la suma de las filas de Y multiplicada por alguna constante y, por lo tanto, es proporcional a un promedio.
+
+#Las tres primeras columnas están muy cerca de ser una constante, lo que implica que estas columnas son la suma de las filas de Y multiplicadas por alguna constante y, por lo tanto, son proporcionales a un promedio.
