@@ -28,6 +28,7 @@ h1 <- hclust(d)
 plot(h1, cex = 0.65)
 
 
+
 #Q3
 
 #Ejecute una agrupación k-means en los datos con K = 7. Haga una tabla que compare los grupos identificados con los tipos de tejido reales. Ejecute el algoritmo varias veces para ver cómo cambia la respuesta.

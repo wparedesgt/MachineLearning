@@ -75,8 +75,9 @@ which.min(colSds(brca$x)) #Respuesta
 
 #Use sweep dos veces para escalar cada columna: reste la media de l a columna, luego divida por la desviación estándar de la columna.
 
-x <- sweep(brca$x,2,colMeans(brca$x), FUN="-")
+#x <- sweep(brca$x,2,colMeans(brca$x), FUN="-")
 
+x <- sweep(brca$x,2,colMeans(brca$x))
 x <- sweep(x,2,colSds(brca$x), FUN="/")
 
 sd(x[,1])
@@ -94,6 +95,8 @@ median(x[,1])
 #Pregunta 3: Distancia
 
 #Calcule la distancia entre todas las muestras usando la matriz escalada.
+
+
 
 d <- dist(x)
 
@@ -133,3 +136,44 @@ mean(dist_BtoM)
 d_features <- dist(t(x))
 
 heatmap(as.matrix(d_features), labRow = NA, labCol = NA)
+
+
+
+#Pregunta 5: agrupamiento jerárquico
+
+#Realice la agrupación jerárquica en las 30 características. Cortar el árbol en 5 grupos.
+
+#Todas menos una de las opciones de respuesta están en el mismo grupo.
+
+#¿Cuál está en un grupo diferente?
+
+
+h <- hclust(d_features)
+
+plot(h, cex = 0.65)
+
+groups <- cutree(h, k = 5)
+
+split(names(groups), groups)
+
+
+#Proyecto de cáncer de mama, parte 2
+
+#Pregunta 6: PCA: proporción de varianza
+
+#Realice un análisis de componentes principales de la matriz escalada.
+
+#¿Qué proporción de varianza se explica por el primer componente principal?
+
+
+pca <- prcomp(x)
+
+
+dim(pca$rotation)
+
+
+dim(pca$x)
+
+plot(pca$sdev)
+
+#¿Cuántos componentes principales se requieren para explicar al menos el 90% de la varianza?

@@ -37,6 +37,7 @@ x <- movielens %>%
   select(title, userId, rating) %>% 
   spread(userId, rating)
 
+
 row_names <- str_remove(x$title, ": Episode") %>% str_trunc(20)
 
 x <- x[,-1] %>% as.matrix()
@@ -49,14 +50,21 @@ rownames(x) <- row_names
 
 #Queremos utilizar estos datos para averiguar si hay grupos de películas basadas en las clasificaciones de 139 calificadores de películas. Un primer paso es encontrar la distancia entre cada par de películas usando la función dist:
 
+head(x)
+
 d <- dist(x)
 
+head(d)
 
 #Agrupación jerárquica
 
 #Con la distancia calculada entre cada par de películas, necesitamos algoritmos para definir grupos a partir de estas. La agrupación jerárquica comienza definiendo cada observación como un grupo separado, luego los dos grupos más cercanos se unen en un grupo de forma iterativa hasta que solo haya un grupo que incluya todas las observaciones. La función hclust implementa este algoritmo y toma una distancia como entrada.
 
+
+
 h <- hclust(d)
+
+head(h)
 
 #Ahora podemos ver los resultados de la agrupacion usando un dendrograma.
 
@@ -68,6 +76,8 @@ plot(h, cex = 0.65)
 #Para generar grupos reales, podemos hacer una de dos cosas: 1) decidir la distancia mínima necesaria para que las observaciones estén en el mismo grupo o 2) decidir la cantidad de grupos que desea y luego encontrar la distancia mínima que logra esto. La función cutree se puede aplicar a la salida de hclust para realizar cualquiera de estas dos operaciones y generar grupos.
 
 groups <- cutree(h, k = 10)
+
+head(groups)
 
 split(names(groups), groups)
 
