@@ -14,6 +14,7 @@ library(tidyverse)
 library(matrixStats)
 library(caret)
 library(dslabs)
+library(ggrepel)
 data("brca")
 
 
@@ -69,6 +70,9 @@ sd(brca$x[,30])
 sd_mas_baja <- sapply(NoSeq, CalculaSD) %>% table()
 
 which.min(colSds(brca$x)) #Respuesta
+x[is.na(x)] <- 0
+
+
 
 
 #Pregunta 2: escalar la matriz
@@ -165,15 +169,82 @@ split(names(groups), groups)
 
 #¿Qué proporción de varianza se explica por el primer componente principal?
 
-
 pca <- prcomp(x)
 
-
-dim(pca$rotation)
-
-
-dim(pca$x)
-
-plot(pca$sdev)
+summary(pca) #respuesta 0.443 en PC1
 
 #¿Cuántos componentes principales se requieren para explicar al menos el 90% de la varianza?
+
+
+#How many principal components are required to explain at least 90% of the variance?
+
+summary(pca) #l primer vaor de Cumulative Proportion excede el 0.9 en el PC7
+
+
+
+#Q7
+
+
+#Trace los dos primeros componentes principales con un color que represente el tipo de tumor (benigno / maligno).
+
+#¿Cual de los siguientes es verdadero?
+
+
+pca$x[,1:2]
+
+pcs <- data.frame(pca$x[,1:2], Tipo = brca$y)
+
+pcs %>% ggplot(aes(PC1, PC2, color = Tipo)) +
+  geom_point()
+ 
+
+#Q8 PCA PC Boxplot
+
+#Hacer un boxplot de los primeros 10 PCs  agrupados por tipo de tumor.
+
+data.frame(type = brca$y, pca$x[,1:10]) %>%
+  gather(key = "PC", value = "value", -type) %>%
+  ggplot(aes(PC, value, fill = type)) +
+  geom_boxplot()
+
+#Cancer de Seno Parte 3
+
+#Establezca la semilla en 1, luego cree una partición de datos que divida brca$y y la versión escalada de la matriz brca$x en un conjunto de prueba del 20% y un 80% de entrenamiento utilizando el siguiente código:
+
+
+set.seed(1, sample.kind = "Rounding")    # if using R 3.6 or later
+test_index <- createDataPartition(brca$y, times = 1, p = 0.2, list = FALSE)
+test_x <- x[test_index,]
+test_y <- brca$y[test_index]
+train_x <- x[-test_index,]
+train_y <- brca$y[-test_index]
+
+
+#Question 9: Training and test sets
+
+#Check that the training and test sets have similar proportions of benign and malignant tumors.
+
+#What proportion of the training set is benign?
+
+table(train_y)
+mean(train_y == "B")
+
+#What proportion of the test set is benign?
+
+table(test_y)
+mean(test_y == "B")
+
+#Question 10a: K-means Clustering
+
+#The predict_kmeans function defined here takes two arguments - a matrix of observations x and a k-means object k - and assigns each row of x to a cluster from k.
+
+predict_kmeans <- function(x, k) {
+  centers <- k$centers    # extract cluster centers
+  # calculate distance to cluster centers
+  distances <- sapply(1:nrow(x), function(i){
+    apply(centers, 1, function(y) dist(rbind(x[i,], y)))
+  })
+  max.col(-t(distances))  # select cluster with min distance to center
+}
+
+

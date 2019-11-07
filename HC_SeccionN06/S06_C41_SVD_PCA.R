@@ -57,18 +57,20 @@ pca <- prcomp(y)
 
 dim(pca$rotation)
 
+
 #Mientras que los vectores "p", que son los efectos del usuario, se almacenan en esta matriz.
 
 #La función PCA devuelve un componente con la variabilidad de cada uno de los componentes principales y podemos acceder a él así y trazarlo.
 
 dim(pca$x)
 
-plot(pca$sdev)
+plot(pca$sdev, highligth = TRUE)
+
+
+
 
 #También podemos ver que solo con algunos de estos componentes principales ya explicamos un gran porcentaje de los datos.
-
-var_explained <- cumsum(pca$sdev^2/sum(pca$sdev^2))
-plot(var_explained)
+#30
 
 
 #Entonces, por ejemplo, con solo 50 componentes principales, ya estamos explicando aproximadamente la mitad de la variabilidad de un total de más de 300 componentes principales.
