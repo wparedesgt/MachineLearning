@@ -81,8 +81,8 @@ x[is.na(x)] <- 0
 
 #x <- sweep(brca$x,2,colMeans(brca$x), FUN="-")
 
-x <- sweep(brca$x,2,colMeans(brca$x))
-x <- sweep(x,2,colSds(brca$x), FUN="/")
+x_scaled <- sweep(brca$x,2,colMeans(brca$x))
+x_scaled <- sweep(x_scaled,2,colSds(brca$x), FUN="/")
 
 sd(x[,1])
 median(x[,1])
@@ -137,7 +137,7 @@ mean(dist_BtoM)
 
 #heatmap(x, labRow = NA, labCol = NA)
 
-d_features <- dist(t(x))
+d_features <- dist(t(x_scaled))
 
 heatmap(as.matrix(d_features), labRow = NA, labCol = NA)
 
@@ -169,7 +169,7 @@ split(names(groups), groups)
 
 #¿Qué proporción de varianza se explica por el primer componente principal?
 
-pca <- prcomp(x)
+pca <- prcomp(x_scaled)
 
 summary(pca) #respuesta 0.443 en PC1
 
@@ -214,10 +214,11 @@ data.frame(type = brca$y, pca$x[,1:10]) %>%
 
 set.seed(1, sample.kind = "Rounding")    # if using R 3.6 or later
 test_index <- createDataPartition(brca$y, times = 1, p = 0.2, list = FALSE)
-test_x <- x[test_index,]
+test_x <- x_scaled[test_index,]
 test_y <- brca$y[test_index]
-train_x <- x[-test_index,]
+train_x <- x_scaled[-test_index,]
 train_y <- brca$y[-test_index]
+
 
 
 #Question 9: Training and test sets
@@ -238,6 +239,8 @@ mean(test_y == "B")
 
 #The predict_kmeans function defined here takes two arguments - a matrix of observations x and a k-means object k - and assigns each row of x to a cluster from k.
 
+#La función predic_kmeans definida aquí toma dos argumentos: una matriz de observaciones "x" y un objeto k-means, y asigna cada fila de x a un cluster desde k.
+
 predict_kmeans <- function(x, k) {
   centers <- k$centers    # extract cluster centers
   # calculate distance to cluster centers
@@ -246,5 +249,44 @@ predict_kmeans <- function(x, k) {
   })
   max.col(-t(distances))  # select cluster with min distance to center
 }
+
+#Establezca la semilla en 3. Realice la agrupación k-means en el conjunto de entrenamiento con 2 centros y asigne la salida a k. Luego use la función predic_kmeans para hacer predicciones en el conjunto de prueba.
+
+#¿Cuál es la precisión general?
+
+set.seed(3)
+
+k <- kmeans(train_x, centers = 2)
+
+p_hat <- predict_kmeans(test_x, k)
+
+y_hat <- ifelse(p_hat == 1, "B", "M") %>% factor()
+
+confusionMatrix(y_hat, test_y)$overall["Accuracy"]
+
+
+#Pregunta 10b: K-means Clustering
+
+#Que proporcion de tumores benignos fue correctamente identificacdo.
+
+sensitivity(factor(y_hat), test_y, positive = "B")
+
+
+#Que proporcion de tumores malignos fue correctamente identificacdo.
+
+sensitivity(factor(y_hat), test_y, positive = "M")
+
+
+
+#Pregunta 11: modelo de regresión logística
+
+#Ajuste un modelo de regresión logística en el conjunto de entrenamiento utilizando todos los predictores.
+
+#Ignorar las advertencias sobre el algoritmo no convergente. Haga redicciones en el conjunto de prueba.
+
+#¿Cuál es la precisión del modelo de regresión logística en el conjunto de prueba?
+
+train_set <- c(train_x, train_y)
+
 
 
