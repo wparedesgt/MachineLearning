@@ -328,3 +328,15 @@ y_hat_loess <- predict(train_loess, test_set)
 confusionMatrix(y_hat_loess, test_set$y)$overall["Accuracy"]
 
 
+#Proyecto de cáncer de mama, parte 4
+
+#Pregunta 14: Modelo de vecinos K más cercanos
+
+#Establezca la semilla en 7, luego entrene un modelo de vecinos k-más cercanos en el conjunto de entrenamiento usando el paquete caret. Pruebe valores impares de k de 3 a 21. Use el modelo final para generar predicciones en el conjunto de prueba.
+
+#¿Cuál es el valor final de k utilizado en el modelo?
+  
+  
+#¿Cuál es la precisión del modelo kNN en el conjunto de prueba?
+
+
