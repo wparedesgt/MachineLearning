@@ -84,8 +84,8 @@ x[is.na(x)] <- 0
 x_scaled <- sweep(brca$x,2,colMeans(brca$x))
 x_scaled <- sweep(x_scaled,2,colSds(brca$x), FUN="/")
 
-sd(x[,1])
-median(x[,1])
+sd(x_scaled[,1])
+median(x_scaled[,1])
 
 #Después de escalar, ¿cuál es la desviación estándar de la primera columna?
 
@@ -102,7 +102,7 @@ median(x[,1])
 
 
 
-d <- dist(x)
+d <- dist(x_scaled)
 
 
 d[2:357]
@@ -117,7 +117,7 @@ head(d)
 mean(d[1:356]); 
 mean(d[357:569])
 
-d_samples <- dist(x)
+d_samples <- dist(x_scaled)
 dist_BtoB <- as.matrix(d_samples)[1, brca$y == "B"]
 mean(dist_BtoB[2:length(dist_BtoB)])
 
@@ -286,7 +286,45 @@ sensitivity(factor(y_hat), test_y, positive = "M")
 
 #¿Cuál es la precisión del modelo de regresión logística en el conjunto de prueba?
 
-train_set <- c(train_x, train_y)
+train_set <- tibble(y = train_y, x = train_x)
+test_set <- tibble(y = test_y, x = test_x)
 
+train_lm <- train(y ~., method = "glm", data = train_set)
+y_hat_lm <- predict(train_lm, test_set, type = "raw")
+confusionMatrix(y_hat_lm, test_set$y)$overall["Accuracy"]
+
+
+
+#Pregunta 12: modelos LDA y QDA
+
+#Entrene un modelo LDA y un modelo QDA en el conjunto de entrenamiento. Haga predicciones sobre el conjunto de prueba usando cada modelo.
+
+
+
+#¿Cuál es la precisión del modelo LDA en el conjunto de prueba?
+
+train_lda <- train(y ~., method = "lda", data = train_set)  
+y_hat_lda <- predict(train_lda, test_set)
+confusionMatrix(y_hat_lda, test_set$y)$overall["Accuracy"]
+
+#¿Cuál es la precisión del modelo QDA en el conjunto de prueba?
+
+train_qda <- train(y ~., method = "qda", data = train_set)
+y_hat_qda <- predict(train_qda, test_set)
+confusionMatrix(y_hat_qda, test_set$y)$overall["Accuracy"]
+
+
+#Pregunta 13: modelo de Loess
+
+#Establezca la semilla en 5, luego ajuste un modelo de loess en el conjunto de entrenamiento con el paquete de caret. Deberá instalar el paquete gam si aún no lo ha hecho. Use default tuning grid. Esto puede tomar varios minutos; ignorar las advertencias. Generar predicciones en el conjunto de prueba.
+
+set.seed(5)
+library(gam)
+
+#¿Cuál es la precisión del modelo loess en el conjunto de prueba?
+
+train_loess <- train(y ~., method = "gamLoess", data = train_set)
+y_hat_loess <- predict(train_loess, test_set)
+confusionMatrix(y_hat_loess, test_set$y)$overall["Accuracy"]
 
 

@@ -99,3 +99,4 @@ confusionMatrix(y_hat_logit, test_set$sex)$overall[["Accuracy"]]
 #Sin embargo, una vez que pasemos a ejemplos más complejos, veremos que la regresión lineal y la regresión logística son limitadas y no lo suficientemente flexibles como para ser útiles.
 
 #Las técnicas que aprenderemos son esencialmente enfoques para estimar probabilidades condicionales o expectativas condicionales de manera más flexible.
+
