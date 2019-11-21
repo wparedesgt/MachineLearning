@@ -385,6 +385,7 @@ confusionMatrix(y_hat_rf, test_set$y)$overall["Accuracy"]
 
 
 #¿Cuál es la variable más importante en el modelo forestal aleatorio?
+models <- c("glm", "lda", "qda", "gamLoess", "knn", "rf")
 
 fit_rf <- randomForest(train_x, train_y, 
                        minNode = train_rf$bestTune$mtry)
@@ -407,15 +408,15 @@ varImp(train_rf)
 
 #¿Cuál es la precisión de la predicción de conjunto?
 
-models <- c("kmeans", "glm", "lda", "qda", "gamLoess", "knn", "rf")
+#models <- c("glm", "lda", "qda", "gamLoess", "knn", "rf")
 
 
-fits <- lapply(models, function(model){ 
-  print(model)
-  train(train_x, train_y, method = model)
-}) 
+#fits <- lapply(models, function(model){ 
+#  print(model)
+#  train(train_x, train_y, method = model)
+#}) 
 
-names(fits) <- models
+#names(fits) <- models
 
 
 
