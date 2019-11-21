@@ -242,7 +242,7 @@ mean(test_y == "B")
 #La función predic_kmeans definida aquí toma dos argumentos: una matriz de observaciones "x" y un objeto k-means, y asigna cada fila de x a un cluster desde k.
 
 predict_kmeans <- function(x, k) {
-  centers <- k$centers    # extract cluster centers
+  centers <- k$centers    # ex,tract cluster centers
   # calculate distance to cluster centers
   distances <- sapply(1:nrow(x), function(i){
     apply(centers, 1, function(y) dist(rbind(x[i,], y)))
@@ -289,8 +289,8 @@ sensitivity(factor(y_hat), test_y, positive = "M")
 train_set <- tibble(y = train_y, x = train_x)
 test_set <- tibble(y = test_y, x = test_x)
 
-train_lm <- train(y ~., method = "glm", data = train_set)
-y_hat_lm <- predict(train_lm, test_set, type = "raw")
+train_lm <- train(train_x, train_y, method = "glm")
+y_hat_lm <- predict(train_lm, test_x, type = "raw")
 confusionMatrix(y_hat_lm, test_set$y)$overall["Accuracy"]
 
 
@@ -303,14 +303,14 @@ confusionMatrix(y_hat_lm, test_set$y)$overall["Accuracy"]
 
 #¿Cuál es la precisión del modelo LDA en el conjunto de prueba?
 
-train_lda <- train(y ~., method = "lda", data = train_set)  
-y_hat_lda <- predict(train_lda, test_set)
+train_lda <- train(train_x, train_y, method = "lda")  
+y_hat_lda <- predict(train_lda, test_x)
 confusionMatrix(y_hat_lda, test_set$y)$overall["Accuracy"]
 
 #¿Cuál es la precisión del modelo QDA en el conjunto de prueba?
 
-train_qda <- train(y ~., method = "qda", data = train_set)
-y_hat_qda <- predict(train_qda, test_set)
+train_qda <- train(train_x, train_y, method = "qda")
+y_hat_qda <- predict(train_qda, test_x)
 confusionMatrix(y_hat_qda, test_set$y)$overall["Accuracy"]
 
 
@@ -323,8 +323,8 @@ library(gam)
 
 #¿Cuál es la precisión del modelo loess en el conjunto de prueba?
 
-train_loess <- train(y ~., method = "gamLoess", data = train_set)
-y_hat_loess <- predict(train_loess, test_set)
+train_loess <- train(train_x, train_y, method = "gamLoess")
+y_hat_loess <- predict(train_loess, test_x)
 confusionMatrix(y_hat_loess, test_set$y)$overall["Accuracy"]
 
 
@@ -334,9 +334,88 @@ confusionMatrix(y_hat_loess, test_set$y)$overall["Accuracy"]
 
 #Establezca la semilla en 7, luego entrene un modelo de vecinos k-más cercanos en el conjunto de entrenamiento usando el paquete caret. Pruebe valores impares de k de 3 a 21. Use el modelo final para generar predicciones en el conjunto de prueba.
 
+set.seed(7)
+k <- seq(3,21,2)
+
+k
+
+train_knn <- train(train_x, train_y, 
+                   method = "knn", 
+                   tuneGrid = data.frame(k = c(3,5,7,9,11,13,15,17,19,21))
+                   )
+
+
+
 #¿Cuál es el valor final de k utilizado en el modelo?
-  
+
+ggplot(train_knn, highlight = TRUE) 
+train_knn$bestTune
   
 #¿Cuál es la precisión del modelo kNN en el conjunto de prueba?
+
+y_hat_knn <- predict(train_knn, test_x)
+
+confusionMatrix(y_hat_knn, test_set$y)$overall["Accuracy"]
+
+
+#Pregunta 15a: modelo de bosque aleatorio
+
+#Establezca la semilla en 9, luego entrene un modelo de bosque aleatorio en el conjunto de entrenamiento usando el paquete de caret. Pruebe valores mtry de 3, 5, 7 y 9. Use el argumento importance=TRUE para que se pueda extraer la importancia de la característica. Generar predicciones en el conjunto de prueba.
+
+library(randomForest)
+
+set.seed(9)
+
+grid <- data.frame(mtry = c(3,5,7,9))
+
+train_rf <- train(train_x, train_y, 
+                  method = "rf", 
+                  tuneGrid = grid, 
+                  importance = TRUE)
+
+#¿Qué valor de mtry da la mayor precisión?
+
+ggplot(train_rf, highlight = TRUE)
+train_rf$bestTune  
+  
+#¿Cuál es la precisión del modelo de bosque aleatorio en el conjunto de prueba?
+
+y_hat_rf <- predict(train_rf, test_x)
+confusionMatrix(y_hat_rf, test_set$y)$overall["Accuracy"]
+
+
+#¿Cuál es la variable más importante en el modelo forestal aleatorio?
+
+fit_rf <- randomForest(train_x, train_y, 
+                       minNode = train_rf$bestTune$mtry)
+
+varImp(train_rf)
+
+#Pregunta 15b: modelo forestal aleatorio
+
+#Considere las 10 variables más importantes en el modelo de bosque aleatorio.
+
+varImp(train_rf)
+
+#¿Qué conjunto de características es más importante para determinar el tipo de tumor?
+
+varImp(train_rf)
+
+#Pregunta 16a: Crear un conjunto
+
+#Cree un conjunto utilizando las predicciones de los 7 modelos creados en los ejercicios anteriores: k-means, regresión logística, LDA, QDA, loess, k vecinos más cercanos y bosque aleatorio. Use el conjunto para generar una predicción mayoritaria del tipo de tumor (si la mayoría de los modelos sugieren que el tumor es maligno, prediga maligno).
+
+#¿Cuál es la precisión de la predicción de conjunto?
+
+models <- c("kmeans", "glm", "lda", "qda", "gamLoess", "knn", "rf")
+
+
+fits <- lapply(models, function(model){ 
+  print(model)
+  train(train_x, train_y, method = model)
+}) 
+
+names(fits) <- models
+
 
 

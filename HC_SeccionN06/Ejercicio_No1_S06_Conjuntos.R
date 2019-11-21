@@ -28,6 +28,7 @@ fits <- lapply(models, function(model){
 
 names(fits) <- models
 
+fits
 
 #Ahora que tiene todos los modelos entrenados en una lista, use sapply o map para crear una matriz de predicciones para el conjunto de pruebas. 
 
