@@ -368,7 +368,7 @@ set.seed(9)
 
 grid <- data.frame(mtry = c(3,5,7,9))
 
-train_rf <- train(train_x, train_y, 
+train_rf <- train(train_x, train_y,  test_set$y,
                   method = "rf", 
                   tuneGrid = grid, 
                   importance = TRUE)
@@ -408,8 +408,30 @@ varImp(train_rf)
 
 #¿Cuál es la precisión de la predicción de conjunto?
 
-#models <- c("glm", "lda", "qda", "gamLoess", "knn", "rf")
+models <- c( "k_means","glm", "lda", "qda", "gamLoess", "knn", "rf")
 
+
+fits <- c(y_hat, y_hat_lm, y_hat_lda, y_hat_qda, y_hat_loess, y_hat_knn, y_hat_rf )
+
+table(fits)
+
+
+class(fits)
+str(fits)
+
+
+fits1 <- createDataPartition(fits, times = 1, p = 0.1428, list = FALSE)
+
+
+fits2 <- fits[fits1]
+
+table(fits2)
+
+
+y_hat_all_models <- ifelse(fits2 == 1, "B", "M") %>% factor()
+
+
+confusionMatrix(y_hat_all_models, test_y)$overall["Accuracy"]
 
 #fits <- lapply(models, function(model){ 
 #  print(model)
