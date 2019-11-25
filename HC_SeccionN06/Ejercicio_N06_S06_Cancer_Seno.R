@@ -286,12 +286,12 @@ sensitivity(factor(y_hat), test_y, positive = "M")
 
 #¿Cuál es la precisión del modelo de regresión logística en el conjunto de prueba?
 
-train_set <- tibble(y = train_y, x = train_x)
-test_set <- tibble(y = test_y, x = test_x)
+#train_set <- tibble(y = train_y, x = train_x)
+#test_set <- tibble(y = test_y, x = test_x)
 
 train_lm <- train(train_x, train_y, method = "glm")
 y_hat_lm <- predict(train_lm, test_x, type = "raw")
-confusionMatrix(y_hat_lm, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_lm, test_y)$overall["Accuracy"]
 
 
 
@@ -305,13 +305,13 @@ confusionMatrix(y_hat_lm, test_set$y)$overall["Accuracy"]
 
 train_lda <- train(train_x, train_y, method = "lda")  
 y_hat_lda <- predict(train_lda, test_x)
-confusionMatrix(y_hat_lda, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_lda, test_y)$overall["Accuracy"]
 
 #¿Cuál es la precisión del modelo QDA en el conjunto de prueba?
 
 train_qda <- train(train_x, train_y, method = "qda")
 y_hat_qda <- predict(train_qda, test_x)
-confusionMatrix(y_hat_qda, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_qda, test_y)$overall["Accuracy"]
 
 
 #Pregunta 13: modelo de Loess
@@ -325,7 +325,7 @@ library(gam)
 
 train_loess <- train(train_x, train_y, method = "gamLoess")
 y_hat_loess <- predict(train_loess, test_x)
-confusionMatrix(y_hat_loess, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_loess, test_y)$overall["Accuracy"]
 
 
 #Proyecto de cáncer de mama, parte 4
@@ -355,7 +355,7 @@ train_knn$bestTune
 
 y_hat_knn <- predict(train_knn, test_x)
 
-confusionMatrix(y_hat_knn, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_knn, test_y)$overall["Accuracy"]
 
 
 #Pregunta 15a: modelo de bosque aleatorio
@@ -368,9 +368,9 @@ set.seed(9)
 
 grid <- data.frame(mtry = c(3,5,7,9))
 
-train_rf <- train(train_x, train_y,  test_set$y,
-                  method = "rf", 
-                  tuneGrid = grid, 
+train_rf <- train(train_x, train_y,
+                  method = "rf",
+                  tuneGrid = grid,
                   importance = TRUE)
 
 #¿Qué valor de mtry da la mayor precisión?
@@ -381,7 +381,8 @@ train_rf$bestTune
 #¿Cuál es la precisión del modelo de bosque aleatorio en el conjunto de prueba?
 
 y_hat_rf <- predict(train_rf, test_x)
-confusionMatrix(y_hat_rf, test_set$y)$overall["Accuracy"]
+confusionMatrix(y_hat_rf, test_y)$overall["Accuracy"]
+
 
 
 #¿Cuál es la variable más importante en el modelo forestal aleatorio?
@@ -416,29 +417,20 @@ fits <- c(y_hat, y_hat_lm, y_hat_lda, y_hat_qda, y_hat_loess, y_hat_knn, y_hat_r
 table(fits)
 
 
-class(fits)
-str(fits)
+y_hat_all_models <- ifelse(fits == 1, "B", "M") %>% factor()
 
 
-fits1 <- createDataPartition(fits, times = 1, p = 0.1428, list = FALSE)
+mean(y_hat_all_models == test_y)  # es 0.961
+
+#confusionMatrix(y_hat_all_models, test_y)$overall["Accuracy"]
 
 
-fits2 <- fits[fits1]
-
-table(fits2)
+#0.973913
 
 
-y_hat_all_models <- ifelse(fits2 == 1, "B", "M") %>% factor()
+ensemble <- cbind(glm = y_hat_ == "B", lda = lda_preds == "B", qda = qda_preds == "B", loess = loess_preds == "B", rf = rf_preds == "B", knn = knn_preds == "B", kmeans = kmeans_preds == "B")
 
-
-confusionMatrix(y_hat_all_models, test_y)$overall["Accuracy"]
-
-#fits <- lapply(models, function(model){ 
-#  print(model)
-#  train(train_x, train_y, method = model)
-#}) 
-
-#names(fits) <- models
-
+ensemble_preds <- ifelse(rowMeans(ensemble) > 0.5, "B", "M")
+mean(ensemble_preds == test_y)
 
 
